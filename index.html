@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number-Roman Numeral Converter</title>
+</head>
+<body>
+
+<h2>Number-Roman Numeral Converter</h2>
+
+<label for="inputValue">Enter a number or Roman numeral:</label>
+<input type="text" id="inputValue" placeholder="Enter value">
+
+<button onclick="convert()">Convert</button>
+
+<p id="resultMessage"></p>
+
+<script>
+    function isRomanNumeral(value) {
+        // Regular expression to check if the value is a valid Roman numeral
+        return /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/.test(value);
+    }
+
+    function convert() {
+        var inputValue = document.getElementById('inputValue').value;
+        var resultMessage = document.getElementById('resultMessage');
+        var convertedValue;
+
+        if (isRomanNumeral(inputValue)) {
+            // Convert Roman numeral to number
+            convertedValue = romanToNumber(inputValue);
+            resultMessage.innerHTML = `Converted to number: ${convertedValue}`;
+        } else {
+            // Convert number to Roman numeral
+            convertedValue = numberToRoman(parseInt(inputValue, 10));
+            resultMessage.innerHTML = `Converted to Roman numeral: ${convertedValue}`;
+        }
+    }
+
+    function romanToNumber(roman) {
+        // Object to store the values of Roman numerals
+        var romanNumerals = {
+            I: 1,
+            V: 5,
+            X: 10,
+            L: 50,
+            C: 100,
+            D: 500,
+            M: 1000
+        };
+
+        var result = 0;
+
+        for (var i = 0; i < roman.length; i++) {
+            var currentSymbol = romanNumerals[roman[i]];
+            var nextSymbol = romanNumerals[roman[i + 1]];
+
+            // Check if the current symbol is less than the next symbol
+            if (nextSymbol > currentSymbol) {
+                result += nextSymbol - currentSymbol;
+                i++; // Skip the next symbol as it has already been considered
+            } else {
+                result += currentSymbol;
+            }
+        }
+
+        return result;
+    }
+
+    function numberToRoman(number) {
+        // Arrays to store the Roman numeral symbols and their corresponding values
+        var romanSymbols = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"];
+        var romanValues = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+
+        var result = "";
+
+        for (var i = 0; i < romanValues.length; i++) {
+            while (number >= romanValues[i]) {
+                result += romanSymbols[i];
+                number -= romanValues[i];
+            }
+        }
+
+        return result;
+    }
+</script>
+
+</body>
+</html>
